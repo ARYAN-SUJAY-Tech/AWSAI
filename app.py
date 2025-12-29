@@ -1,5 +1,5 @@
 import streamlit as st
-from database import init_db, authenticate_user, create_user, save_history, get_history
+from database import init_db, authenticate_user, create_user, save_history, get_history, reset_password
 from classifier import classify_issue
 from prompts import build_prompt
 from ai_clients import call_chatgpt
@@ -208,6 +208,7 @@ elif st.session_state.page == "app":
                     f"(https://docs.aws.amazon.com/search/doc-search.html?"
                     f"searchPath=documentation&searchQuery={encoded_query})"
                 )
+
 
 
 
