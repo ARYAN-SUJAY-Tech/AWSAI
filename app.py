@@ -7,7 +7,7 @@ from ai_clients import call_chatgpt
 # -----------------------------------------------------
 # APP CONFIG
 # -----------------------------------------------------
-st.set_page_config(page_title="AWS AI Assistant", layout="centered")
+st.set_page_config(page_title="AWSAI Assistant", layout="centered")
 
 init_db()
 
@@ -28,10 +28,10 @@ if "theme" not in st.session_state:
 # -----------------------------------------------------
 def apply_theme():
     if st.session_state.theme == "dark":
-        bg = "linear-gradient(135deg, #0f172a, #1e293b, #334155)"
+        bg = "linear-gradient(135deg, #0f172a, #334155, #f8fafc)"
         text = "#f8fafc"
     else:
-        bg = "linear-gradient(135deg, #f8fafc, #e5e7eb)"
+        bg = "linear-gradient(135deg, #f8fafc, #A3AABE)"
         text = "#111827"
 
     st.markdown(f"""
@@ -57,10 +57,17 @@ def apply_theme():
 
 apply_theme()
 
+if "last_input" not in st.session_state:
+    st.session_state.last_input = ""
+
+if "last_output" not in st.session_state:
+    st.session_state.last_output = ""
+
+
 # -----------------------------------------------------
 # THEME TOGGLE
 # -----------------------------------------------------
-col1, col2 = st.columns([6, 1])
+col1, col2 = st.columns([10, 1])
 with col2:
     if st.button("🌙" if st.session_state.theme == "dark" else "☀️"):
         st.session_state.theme = "light" if st.session_state.theme == "dark" else "dark"
@@ -72,8 +79,9 @@ with col2:
 if st.session_state.page == "landing":
     st.markdown("""
     <div style="text-align:center; margin-top:80px;">
-        <h1>☁️ AWS AI Misconfiguration Assistant</h1>
-        <p>Understand AWS errors instantly and fix them with confidence.</p>
+        <h1>☁️ AWSAI - AI Misconfiguration Assistant</h1>
+        <p>Diagnose AWS errors instantly with AI-powered explanations, security insights, and step-by-step solutions — built for developers, students, and cloud engineers.
+</p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -85,7 +93,7 @@ if st.session_state.page == "landing":
 # AUTH PAGE
 # -----------------------------------------------------
 elif st.session_state.page == "auth":
-    if st.button("<Home"):
+    if st.button("< Home"):
         st.session_state.page = "landing"
         st.rerun()
         
@@ -121,7 +129,7 @@ elif st.session_state.page == "auth":
 elif st.session_state.page == "app":
 
     with st.sidebar:
-        st.markdown(f"### 👤 {st.session_state.user}")
+        st.markdown(f"### 👤USER:\t{st.session_state.user}")
         if st.button("Logout"):
             st.session_state.page = "landing"
             st.session_state.user = None
