@@ -101,7 +101,7 @@ elif st.session_state.page == "auth":
         
     st.markdown("## 🔐 Authentication")
 
-    tab1, tab2 = st.tabs(["Login", "Sign Up"])
+    tab1, tab2, tab3 = st.tabs(["Login", "Sign Up", "Forgot Password"])
 
     with tab1:
         email = st.text_input("Email")
@@ -128,6 +128,16 @@ elif st.session_state.page == "auth":
                 st.success("Account created successfully!")
             elif result == "exists":
                 st.error("User already exists. Please log in.")
+
+    with tab3:
+        reset_email = st.text_input("Enter your registered email")
+        new_pass = st.text_input("New password", type="password")
+
+        if st.button("Reset Password"):
+            if reset_password(reset_email, new_pass):
+                st.success("Password updated successfully!")
+            else:
+                st.error("Email not found.")
 
 
 # -----------------------------------------------------
@@ -198,6 +208,7 @@ elif st.session_state.page == "app":
                     f"(https://docs.aws.amazon.com/search/doc-search.html?"
                     f"searchPath=documentation&searchQuery={encoded_query})"
                 )
+
 
 
 
