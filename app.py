@@ -5,6 +5,7 @@ from prompts import build_prompt
 from ai_clients import call_chatgpt
 from doc_recommender import get_docs_for_hypotheses
 from prompts import parse_aws_error, extract_error_block
+import urllib.parse
 # -----------------------------------------------------
 # APP CONFIG
 # -----------------------------------------------------
@@ -170,11 +171,28 @@ elif st.session_state.page == "app":
             structured_input = parse_aws_error(extract_error_block(user_input))
             print(structured_input)
             docs = get_docs_for_hypotheses(structured_input)
-            for d in docs:
-                st.markdown(f"#### {d['hypothesis']} (Confidence: {d['confidence']})")
-                print(f"{d['hypothesis']} (Confidence: {d['confidence']})")
-                for doc in d["docs"]:
-                    st.markdown(f"- [{doc['title']}]({doc['url']}) - {doc['reason']}")
-                    print(f"- [{doc['title']}]({doc['url']}) - {doc['reason']}")
+            if docs:
+                for d in docs:
+                    st.markdown(f"#### {d['hypothesis']} (Confidence: {d['confidence']})")
+                    print(f"{d['hypothesis']} (Confidence: {d['confidence']})")
+                    for doc in d["docs"]:
+                        st.markdown(f"- [{doc['title']}]({doc['url']}) - {doc['reason']}")
+                        print(f"- [{doc['title']}]({doc['url']}) - {doc['reason']}")
+            else:
+                error_block = extract_error_block(user_input)
+                search_query = (
+                    parse_aws_error(error_block).get("error_code")
+                    or " ".join(error_block.split()[:3])
+                )
+
+                encoded_query = urllib.parse.quote(search_query)
+
+                st.markdown(
+                    f"🔎 **Further investigation (AWS Docs):** "
+                    f"[Search AWS documentation for `{search_query}`]"
+                    f"(https://docs.aws.amazon.com/search/doc-search.html?"
+                    f"searchPath=documentation&searchQuery={encoded_query})"
+                )
+
 
 
