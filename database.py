@@ -78,3 +78,17 @@ def get_history(email):
     rows = cur.fetchall()
     conn.close()
     return [r[0] for r in rows]
+
+def reset_password(email, new_password):
+    conn = sqlite3.connect("app.db")
+    cur = conn.cursor()
+    cur.execute("SELECT email FROM users WHERE email=?", (email,))
+    if not cur.fetchone():
+        conn.close()
+        return False
+
+    cur.execute("UPDATE users SET password=? WHERE email=?", (new_password, email))
+    conn.commit()
+    conn.close()
+    return True
+
