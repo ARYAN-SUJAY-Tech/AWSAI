@@ -3,7 +3,8 @@ from database import init_db, authenticate_user, create_user, save_history, get_
 from classifier import classify_issue
 from prompts import build_prompt
 from ai_clients import call_chatgpt
-
+from doc_recommender import get_docs_for_hypotheses
+from prompts import parse_aws_error, extract_error_block
 # -----------------------------------------------------
 # APP CONFIG
 # -----------------------------------------------------
@@ -163,3 +164,15 @@ elif st.session_state.page == "app":
 
 
 
+            st.markdown(result)
+            st.markdown("### 📚 Recommended Documentation")
+
+            structured_input = parse_aws_error(extract_error_block(user_input))
+            print(structured_input)
+            docs = get_docs_for_hypotheses(structured_input)
+            for d in docs:
+                st.markdown(f"#### {d['hypothesis']} (Confidence: {d['confidence']})")
+                print(f"{d['hypothesis']} (Confidence: {d['confidence']})")
+                for doc in d["docs"]:
+                    st.markdown(f"- [{doc['title']}]({doc['url']}) - {doc['reason']}")
+                    print(f"- [{doc['title']}]({doc['url']}) - {doc['reason']}")
