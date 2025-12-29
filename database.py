@@ -9,9 +9,11 @@ def init_db():
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS users (
-            email TEXT PRIMARY KEY,
-            password TEXT
-        )
+        email TEXT PRIMARY KEY,
+        username TEXT,
+        password TEXT
+    )
+
     """)
 
     cursor.execute("""
@@ -26,26 +28,39 @@ def init_db():
     conn.close()
 
 
-def create_user(email, password):
-    conn = sqlite3.connect(DB_NAME)
+def create_user(email, username, password):
+    conn = sqlite3.connect("app.db")
     cur = conn.cursor()
-    try:
-        cur.execute("INSERT INTO users VALUES (?, ?)", (email, password))
-        conn.commit()
-        return True
-    except:
-        return False
-    finally:
+
+    # Check if user already exists
+    cur.execute("SELECT 1 FROM users WHERE email = ?", (email,))
+    if cur.fetchone():
         conn.close()
+        return "exists"
+
+    # Insert new user
+    cur.execute(
+        "INSERT INTO users (email, username, password) VALUES (?, ?, ?)",
+        (email, username, password)
+    )
+    conn.commit()
+    conn.close()
+    return "created"
+
+
 
 
 def authenticate_user(email, password):
-    conn = sqlite3.connect(DB_NAME)
+    conn = sqlite3.connect("app.db")
     cur = conn.cursor()
-    cur.execute("SELECT * FROM users WHERE email=? AND password=?", (email, password))
+    cur.execute(
+        "SELECT username FROM users WHERE email=? AND password=?",
+        (email, password)
+    )
     user = cur.fetchone()
     conn.close()
-    return user
+    return user  # returns (username,) or None
+
 
 
 def save_history(email, issue):
