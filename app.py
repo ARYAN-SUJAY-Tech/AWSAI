@@ -145,12 +145,15 @@ elif st.session_state.page == "app":
 
     if st.button("Analyze"):
         if not user_input.strip():
-            st.warning("Please paste an AWS error.")
+            st.warning("Please enter an AWS error.")
         else:
+            st.session_state.last_input = user_input
             issue = classify_issue(user_input)
             result = call_chatgpt(build_prompt(user_input, issue))
+            st.session_state.last_output = result
+
             save_history(st.session_state.user, issue)
 
             st.markdown("### 🔍 Analysis")
-            st.markdown(result)
+            st.markdown(st.session_state.last_output)
 
