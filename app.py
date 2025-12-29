@@ -164,7 +164,6 @@ elif st.session_state.page == "app":
 
 
 
-            st.markdown(result)
             st.markdown("### 📚 Recommended Documentation")
 
             structured_input = parse_aws_error(extract_error_block(user_input))
@@ -176,3 +175,4 @@ elif st.session_state.page == "app":
                 for doc in d["docs"]:
                     st.markdown(f"- [{doc['title']}]({doc['url']}) - {doc['reason']}")
                     print(f"- [{doc['title']}]({doc['url']}) - {doc['reason']}")
+
