@@ -108,22 +108,27 @@ elif st.session_state.page == "auth":
         password = st.text_input("Password", type="password")
 
         if st.button("Login"):
-            if authenticate_user(email, password):
-                st.session_state.user = email
+            user = authenticate_user(email, password)
+            if user:
+                st.session_state.user = user[0]  # username
                 st.session_state.page = "app"
                 st.rerun()
             else:
                 st.error("Invalid credentials")
 
     with tab2:
-        new_email = st.text_input("New Email")
-        new_password = st.text_input("New Password", type="password")
+        new_username = st.text_input("New Username:")
+        new_email = st.text_input("New Email:")
+        new_password = st.text_input("New Password:", type="password")
 
         if st.button("Create Account"):
-            if create_user(new_email, new_password):
-                st.success("Account created! Please login.")
-            else:
-                st.error("User already exists.")
+            result = create_user(new_email, new_username, new_password)
+
+            if result == "created":
+                st.success("Account created successfully!")
+            elif result == "exists":
+                st.error("User already exists. Please log in.")
+
 
 # -----------------------------------------------------
 # MAIN APPLICATION
@@ -193,6 +198,7 @@ elif st.session_state.page == "app":
                     f"(https://docs.aws.amazon.com/search/doc-search.html?"
                     f"searchPath=documentation&searchQuery={encoded_query})"
                 )
+
 
 
 
