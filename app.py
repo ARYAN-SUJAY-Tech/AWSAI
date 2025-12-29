@@ -28,10 +28,10 @@ if "theme" not in st.session_state:
 # -----------------------------------------------------
 def apply_theme():
     if st.session_state.theme == "dark":
-        bg = "linear-gradient(135deg, #0f172a, #1e293b, #334155)"
+        bg = "linear-gradient(135deg, #0f172a, #334155, #f8fafc)"
         text = "#f8fafc"
     else:
-        bg = "linear-gradient(135deg, #f8fafc, #e5e7eb)"
+        bg = "linear-gradient(135deg, #f8fafc, #A3AABE)"
         text = "#111827"
 
     st.markdown(f"""
@@ -60,7 +60,7 @@ apply_theme()
 # -----------------------------------------------------
 # THEME TOGGLE
 # -----------------------------------------------------
-col1, col2 = st.columns([6, 1])
+col1, col2 = st.columns([10, 1])
 with col2:
     if st.button("🌙" if st.session_state.theme == "dark" else "☀️"):
         st.session_state.theme = "light" if st.session_state.theme == "dark" else "dark"
@@ -145,4 +145,5 @@ elif st.session_state.page == "app":
 
             st.markdown("### 🔍 Analysis")
             st.markdown(result)
+
 
