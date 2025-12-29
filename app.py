@@ -85,6 +85,10 @@ if st.session_state.page == "landing":
 # AUTH PAGE
 # -----------------------------------------------------
 elif st.session_state.page == "auth":
+    if st.button("<Home"):
+        st.session_state.page = "landing"
+        st.rerun()
+        
     st.markdown("## 🔐 Authentication")
 
     tab1, tab2 = st.tabs(["Login", "Sign Up"])
@@ -141,3 +145,4 @@ elif st.session_state.page == "app":
 
             st.markdown("### 🔍 Analysis")
             st.markdown(result)
+
