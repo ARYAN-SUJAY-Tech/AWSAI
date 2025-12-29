@@ -137,8 +137,10 @@ elif st.session_state.page == "app":
 
         st.markdown("### 🕘 Previous Queries")
         for h in get_history(st.session_state.user):
-            st.write("•", h)
-
+            st.markdown(
+             f"<p style='color:white;'>• {h}</p>",
+             unsafe_allow_html=True
+            )
     st.title("☁️ AWSAI - AI Misconfiguration Assistant")
 
     user_input = st.text_area("Paste AWS error here")
@@ -149,13 +151,15 @@ elif st.session_state.page == "app":
         else:
             if st.session_state.last_input != user_input:
                 st.session_state.last_input = user_input
-                issue = classify_issue(user_input)
-                result = call_chatgpt(build_prompt(user_input, issue))
+                with st.spinner("Analyzing AWS error..."):
+                    issue = classify_issue(user_input)
+                    result = call_chatgpt(build_prompt(user_input, issue))
                 st.session_state.last_output = result
                 save_history(st.session_state.user, issue)
 
             st.markdown("### 🔍 Analysis")
             st.markdown(st.session_state.last_output)
+
 
 
 
