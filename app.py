@@ -136,6 +136,10 @@ elif st.session_state.page == "app":
             st.session_state.user = None
             st.rerun()
 
+        st.markdown("""
+        <hr style="border: none; height: 4px; background-color: #4b5563; margin: 20px 0;">
+        """, unsafe_allow_html=True)
+        
         st.markdown("### 🕘 Previous Queries")
         for h in get_history(st.session_state.user)[::-1]:
             st.markdown(
@@ -143,6 +147,7 @@ elif st.session_state.page == "app":
              unsafe_allow_html=True
             )
     st.title("☁️ AWSAI - AI Misconfiguration Assistant")
+    st.divider()
 
     user_input = st.text_area("Paste AWS error here")
 
@@ -171,4 +176,5 @@ elif st.session_state.page == "app":
                 for doc in d["docs"]:
                     st.markdown(f"- [{doc['title']}]({doc['url']}) - {doc['reason']}")
                     print(f"- [{doc['title']}]({doc['url']}) - {doc['reason']}")
+
 
