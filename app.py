@@ -160,13 +160,8 @@ elif st.session_state.page == "app":
 
             st.markdown("### 🔍 Analysis")
             st.markdown(st.session_state.last_output)
-
-
-
-
-            st.markdown(result)
+            # st.markdown(result)
             st.markdown("### 📚 Recommended Documentation")
-
             structured_input = parse_aws_error(extract_error_block(user_input))
             print(structured_input)
             docs = get_docs_for_hypotheses(structured_input)
