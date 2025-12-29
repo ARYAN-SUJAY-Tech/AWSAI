@@ -137,7 +137,7 @@ elif st.session_state.page == "app":
             st.rerun()
 
         st.markdown("### 🕘 Previous Queries")
-        for h in get_history(st.session_state.user):
+        for h in get_history(st.session_state.user)[::-1]:
             st.markdown(
              f"<p style='color:white;'>• {h}</p>",
              unsafe_allow_html=True
@@ -171,3 +171,4 @@ elif st.session_state.page == "app":
                 for doc in d["docs"]:
                     st.markdown(f"- [{doc['title']}]({doc['url']}) - {doc['reason']}")
                     print(f"- [{doc['title']}]({doc['url']}) - {doc['reason']}")
+
