@@ -1,5 +1,5 @@
 import streamlit as st
-from database import init_db, authenticate_user, create_user, save_history, get_history, reset_password
+from database import init_db, authenticate_user, create_user, save_history, get_history, reset_password, verify_user
 from classifier import classify_issue
 from prompts import build_prompt
 from ai_clients import call_chatgpt
@@ -130,14 +130,18 @@ elif st.session_state.page == "auth":
                 st.error("User already exists. Please log in.")
 
     with tab3:
-        reset_email = st.text_input("Enter your registered email")
-        new_pass = st.text_input("New password", type="password")
+        reg_username = st.text_input("Emter your registered username:")
+        reg_email = st.text_input("Enter your registered email:")
+        new_pass = st.text_input("New password:", type="password")
 
         if st.button("Reset Password"):
-            if reset_password(reset_email, new_pass):
-                st.success("Password updated successfully!")
+            if verify_user(reg_email,reg_username):
+                if reset_password(reg_email, new_pass):
+                    st.success("Password updated successfully!")
+                else:
+                    st.error("Error updating password.")
             else:
-                st.error("Email not found.")
+                st.error("Invalid email  or username")
 
 
 # -----------------------------------------------------
@@ -208,6 +212,7 @@ elif st.session_state.page == "app":
                     f"(https://docs.aws.amazon.com/search/doc-search.html?"
                     f"searchPath=documentation&searchQuery={encoded_query})"
                 )
+
 
 
 
