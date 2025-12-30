@@ -1,22 +1,29 @@
 import sqlite3
+import os
 
-DB_NAME = "app.db"
+# -----------------------------
+# Database Path
+# -----------------------------
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.path.join(BASE_DIR, "app.db")
 
 
+# -----------------------------
+# Initialize Database
+# -----------------------------
 def init_db():
-    conn = sqlite3.connect(DB_NAME)
-    cursor = conn.cursor()
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
 
-    cursor.execute("""
+    cur.execute("""
         CREATE TABLE IF NOT EXISTS users (
-        email TEXT PRIMARY KEY,
-        username TEXT,
-        password TEXT
-    )
-
+            email TEXT PRIMARY KEY,
+            username TEXT,
+            password TEXT
+        )
     """)
 
-    cursor.execute("""
+    cur.execute("""
         CREATE TABLE IF NOT EXISTS history (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             email TEXT,
@@ -28,17 +35,18 @@ def init_db():
     conn.close()
 
 
+# -----------------------------
+# Create User
+# -----------------------------
 def create_user(email, username, password):
-    conn = sqlite3.connect("app.db")
+    conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
 
-    # Check if user already exists
-    cur.execute("SELECT 1 FROM users WHERE email = ?", (email,))
+    cur.execute("SELECT 1 FROM users WHERE email=?", (email,))
     if cur.fetchone():
         conn.close()
         return "exists"
 
-    # Insert new user
     cur.execute(
         "INSERT INTO users (email, username, password) VALUES (?, ?, ?)",
         (email, username, password)
@@ -48,47 +56,83 @@ def create_user(email, username, password):
     return "created"
 
 
-
-
+# -----------------------------
+# Authenticate User
+# -----------------------------
 def authenticate_user(email, password):
-    conn = sqlite3.connect("app.db")
+    conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
+
     cur.execute(
-        "SELECT username FROM users WHERE email=? AND password=?",
+        "SELECT * FROM users WHERE email=? AND password=?",
         (email, password)
     )
     user = cur.fetchone()
     conn.close()
-    return user  # returns (username,) or None
+    return user
 
 
-
-def save_history(email, issue):
-    conn = sqlite3.connect(DB_NAME)
+# -----------------------------
+# Verify User (for password reset)
+# -----------------------------
+def verify_user(email, username):
+    conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
-    cur.execute("INSERT INTO history (email, issue) VALUES (?, ?)", (email, issue))
-    conn.commit()
+
+    cur.execute(
+        "SELECT * FROM users WHERE email=? AND username=?",
+        (email, username)
+    )
+    user = cur.fetchone()
     conn.close()
+    return user is not None
 
 
-def get_history(email):
-    conn = sqlite3.connect(DB_NAME)
-    cur = conn.cursor()
-    cur.execute("SELECT issue FROM history WHERE email=?", (email,))
-    rows = cur.fetchall()
-    conn.close()
-    return [r[0] for r in rows]
-
+# -----------------------------
+# Reset Password
+# -----------------------------
 def reset_password(email, new_password):
-    conn = sqlite3.connect("app.db")
+    conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
-    cur.execute("SELECT email FROM users WHERE email=?", (email,))
-    if not cur.fetchone():
-        conn.close()
-        return False
 
-    cur.execute("UPDATE users SET password=? WHERE email=?", (new_password, email))
+    cur.execute(
+        "UPDATE users SET password=? WHERE email=?",
+        (new_password, email)
+    )
+
     conn.commit()
     conn.close()
     return True
 
+
+# -----------------------------
+# Save History
+# -----------------------------
+def save_history(email, issue):
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+
+    cur.execute(
+        "INSERT INTO history (email, issue) VALUES (?, ?)",
+        (email, issue)
+    )
+
+    conn.commit()
+    conn.close()
+
+
+# -----------------------------
+# Get History
+# -----------------------------
+def get_history(email):
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+
+    cur.execute(
+        "SELECT issue FROM history WHERE email=? ORDER BY id DESC",
+        (email,)
+    )
+
+    rows = cur.fetchall()
+    conn.close()
+    return [row[0] for row in rows]
