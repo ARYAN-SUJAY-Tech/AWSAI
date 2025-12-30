@@ -1,7 +1,10 @@
-try:
-    from local_secrets import OPENAI_API_KEY
-except ImportError:
-    OPENAI_API_KEY = None
+#try:
+ #   from local_secrets import OPENAI_API_KEY
+#except ImportError:
+ #   OPENAI_API_KEY = None
+
+import streamlit as st
+OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
 
 from openai import OpenAI
 
@@ -38,3 +41,4 @@ def call_chatgpt(prompt: str) -> str:
             "⚠️ **AI service error occurred.**\n\n"
             f"Details: `{str(e)}`"
         )
+
