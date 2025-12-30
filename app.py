@@ -110,7 +110,7 @@ elif st.session_state.page == "auth":
         if st.button("Login"):
             user = authenticate_user(email, password)
             if user:
-                st.session_state.user = user[0]  # username
+                st.session_state.user = user[1]  # username
                 st.session_state.page = "app"
                 st.rerun()
             else:
@@ -212,6 +212,7 @@ elif st.session_state.page == "app":
                     f"(https://docs.aws.amazon.com/search/doc-search.html?"
                     f"searchPath=documentation&searchQuery={encoded_query})"
                 )
+
 
 
 
