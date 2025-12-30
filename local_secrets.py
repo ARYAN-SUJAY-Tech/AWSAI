@@ -1,3 +1,0 @@
-#secrets.py
-OPENAI_API_KEY = "sk-proj-..."
-
